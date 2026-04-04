@@ -1,6 +1,7 @@
 import argparse
 import os
 import platform
+import sys
 from pathlib import Path
 
 from xlib import appargs as lib_appargs
@@ -32,7 +33,7 @@ def main():
     run_subparsers = run_parser.add_subparsers()
 
     def run_DeepFaceLive(args):
-        userdata_path = Path(args.userdata_dir)
+        userdata_path = Path(args.userdata_dir if args.userdata_dir else './userdata')
         lib_appargs.set_arg_bool('NO_CUDA', args.no_cuda)
 
         print('Running DeepFaceLive.')
@@ -40,7 +41,7 @@ def main():
         DeepFaceLiveApp(userdata_path=userdata_path).run()
 
     p = run_subparsers.add_parser('DeepFaceLive')
-    p.add_argument('--userdata-dir', default=None, action=fixPathAction, help="Workspace directory.")
+    p.add_argument('--userdata-dir', default='./userdata', action=fixPathAction, help="Workspace directory.")
     p.add_argument('--no-cuda', action="store_true", default=False, help="Disable CUDA.")
     p.set_defaults(func=run_DeepFaceLive)
 
@@ -90,7 +91,7 @@ def main():
 
     def bad_args(arguments):
         parser.print_help()
-        exit(0)
+        sys.exit(0)
     parser.set_defaults(func=bad_args)
 
     args = parser.parse_args()
@@ -101,6 +102,8 @@ class fixPathAction(argparse.Action):
         setattr(namespace, self.dest, os.path.abspath(os.path.expanduser(values)))
 
 if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        sys.argv.extend(['run', 'DeepFaceLive', '--userdata-dir', './userdata'])
     main()
 
 # import code
