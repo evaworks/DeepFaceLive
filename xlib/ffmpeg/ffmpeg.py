@@ -3,7 +3,7 @@ import os
 import subprocess
 from typing import Union
 
-FFMPEG_PATH = r"G:\Local\ffmpeg-master-latest-win64-gpl\bin\ffmpeg.exe"
+FFMPEG_PATH = os.environ.get('FFMPEG_PATH', 'ffmpeg')
 
 def run(args, pipe_stdin=False, pipe_stdout=False, pipe_stderr=False, quiet_stderr=False) -> Union[subprocess.Popen,None]:
     """
