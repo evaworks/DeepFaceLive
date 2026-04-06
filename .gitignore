@@ -4,4 +4,5 @@
 !*.txt
 !*.jpg
 !*.png
+!*.bat
 !requirements*
