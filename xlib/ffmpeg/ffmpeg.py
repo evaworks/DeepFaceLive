@@ -1,6 +1,9 @@
 import json
+import os
 import subprocess
 from typing import Union
+
+FFMPEG_PATH = r"G:\Local\ffmpeg-master-latest-win64-gpl\bin\ffmpeg.exe"
 
 def run(args, pipe_stdin=False, pipe_stdout=False, pipe_stderr=False, quiet_stderr=False) -> Union[subprocess.Popen,None]:
     """
@@ -9,7 +12,7 @@ def run(args, pipe_stdin=False, pipe_stdout=False, pipe_stderr=False, quiet_stde
     returns Popen class if success
     otherwise None
     """
-    args = ['ffmpeg'] + args
+    args = [FFMPEG_PATH] + args
 
     stdin_stream = subprocess.PIPE if pipe_stdin else None
     stdout_stream = subprocess.PIPE if pipe_stdout else None
