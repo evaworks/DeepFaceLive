@@ -317,8 +317,9 @@ class StreamOutputWorker(BackendWorker):
                 img = pr.new_data
                 if img is not None:
                     if state.is_streaming:
-                        img = ImageProcessor(view_image).to_uint8().get_image('HWC')
-                        self._streamer.push_frame(img)
+                        if view_image is not None:
+                            img = ImageProcessor(img).to_uint8().get_image('HWC')
+                            self._streamer.push_frame(img)
 
                     if state.is_showing_window:
                         cv2.imshow(self._wnd_name, img)

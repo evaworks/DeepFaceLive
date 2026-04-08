@@ -140,7 +140,7 @@ class BackendConnectionData:
 
 class BackendConnection:
     def __init__(self, multi_producer=False):
-        self._rd = lib_mp.MPSPSCMRRingData(table_size=8192, heap_size_mb=8, multi_producer=multi_producer)
+        self._rd = lib_mp.MPSPSCMRRingData(table_size=16384, heap_size_mb=128, multi_producer=multi_producer)
 
     def write(self, bcd : BackendConnectionData):
         self._rd.write( pickle.dumps(bcd) )
@@ -148,16 +148,21 @@ class BackendConnection:
     def read(self, timeout : float = 0) -> Union[BackendConnectionData, None]:
         b = self._rd.read(timeout=timeout)
         if b is not None:
-            return pickle.loads(b)
+            try:
+                return pickle.loads(b)
+            except Exception:
+                return None
         return None
 
-    def get_write_id(self) -> int:
-        return self._rd.get_write_id()
+    def get_write_id(self) -> int: return self._rd.get_write_id()
 
     def get_by_id(self, id) -> Union[BackendConnectionData, None]:
         b = self._rd.get_by_id(id)
         if b is not None:
-            return pickle.loads(b)
+            try:
+                return pickle.loads(b)
+            except Exception:
+                return None
         return None
 
     def wait_for_read(self, timeout : float) -> bool:
